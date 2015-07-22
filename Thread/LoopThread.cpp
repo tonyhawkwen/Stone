@@ -4,7 +4,7 @@
 #include "Exception.h"
 #include "EventLoop_LibEvent.h"
 
-namespace Essie{
+namespace Stone{
 
 LoopThread::LoopThread(std::string threadName, const InitCallback& cb)
 	:Name_(threadName),

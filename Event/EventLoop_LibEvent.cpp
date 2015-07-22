@@ -5,7 +5,7 @@
 #include "IO.h"
 #include "Macro.h"
 
-namespace Essie{
+namespace Stone{
 
 //auto gEvFn = std::bind(&EventLoopL::EventLoopCallBack, (EventLoopL*)nullptr, -1, std::placeholders::_1);
 struct LoopData

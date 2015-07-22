@@ -1,5 +1,5 @@
-#ifndef _ESSIE_EVENT_LOOP_LIBEVENT_H_
-#define _ESSIE_EVENT_LOOP_LIBEVENT_H_
+#ifndef _STONE_EVENT_LOOP_LIBEVENT_H_
+#define _STONE_EVENT_LOOP_LIBEVENT_H_
 
 #include <thread>
 #include <queue>
@@ -11,7 +11,7 @@ struct event_base;
 
 #define MAX_EVENTS_SIZE 256
 
-namespace Essie{
+namespace Stone{
 
 struct LoopData;
 

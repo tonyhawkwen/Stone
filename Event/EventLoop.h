@@ -1,9 +1,9 @@
-#ifndef _ESSIE_EVENT_LOOP_H_
-#define _ESSIE_EVENT_LOOP_H_
+#ifndef _STONE_EVENT_LOOP_H_
+#define _STONE_EVENT_LOOP_H_
 
 #include "Noncopyable.h"
 
-namespace Essie{
+namespace Stone{
 
 class IO;
 

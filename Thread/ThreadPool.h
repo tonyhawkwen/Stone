@@ -1,5 +1,5 @@
-#ifndef _ESSIE_THREAD_POOL_H_
-#define _ESSIE_THREAD_POOL_H_
+#ifndef _STONE_THREAD_POOL_H_
+#define _STONE_THREAD_POOL_H_
 
 #include <thread>
 #include <mutex>
@@ -11,7 +11,7 @@
 #include "Noncopyable.h"
 #include "AsyncQueue.h"
 
-namespace Essie{
+namespace Stone{
 
 class FunctionWrapper
 {

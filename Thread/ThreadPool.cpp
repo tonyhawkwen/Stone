@@ -3,7 +3,7 @@
 #include "Exception.h"
 #include "Macro.h"
 
-namespace Essie{
+namespace Stone{
 
 std::string GetThreadName()
 {

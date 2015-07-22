@@ -1,10 +1,10 @@
-#ifndef _ESSIE_ATOMICDATA_H_
-#define _ESSIE_ATOMICDATA_H_
+#ifndef _STONE_ATOMICDATA_H_
+#define _STONE_ATOMICDATA_H_
 
 #include <type_traits>
 #include <atomic>
 
-namespace Essie{
+namespace Stone{
 
 template<class T, class Enable = void>
 class AtomicData {

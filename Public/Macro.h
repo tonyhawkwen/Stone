@@ -31,27 +31,13 @@ namespace Stone
 	std::string GetCurrentTime(void);
 }
 
-#ifdef TEST_CORE_APP_FW
 #include <stdio.h>
 #define _PRI(fmt, args...)  printf("\033[34m [%s][%s][%s:%d]" fmt "\033[0m\n", Stone::GetCurrentTime().c_str(), Stone::GetThreadName().c_str(), __func__, __LINE__, ##args)
 #define _ERR(fmt, args...)  printf("\033[31m [%s][%s][%s:%d]" fmt "\033[0m\n", Stone::GetCurrentTime().c_str(), Stone::GetThreadName().c_str(), __func__, __LINE__, ##args)
 #define _WRN(fmt, args...)  printf("\033[33m [%s][%s][%s:%d]" fmt "\033[0m\n", Stone::GetCurrentTime().c_str(), Stone::GetThreadName().c_str(), __func__, __LINE__, ##args)
 #define _DBG(fmt, args...)  printf("\033[32m [%s][%s][%s:%d]" fmt "\033[0m\n", Stone::GetCurrentTime().c_str(), Stone::GetThreadName().c_str(), __func__, __LINE__, ##args)
 #define _INFO(fmt, args...) printf("\033[37m [%s][%s][%s:%d]" fmt "\033[0m\n", Stone::GetCurrentTime().c_str(), Stone::GetThreadName().c_str(), __func__, __LINE__, ##args)
-#else
 
-#include <dlog.h>
-
-#undef LOG_TAG
-#define LOG_TAG "CoreAppFW"
-
-#define _PRI(fmt, args...)  (LOGE("\033[34m [%s]" fmt "\033[0m\n", Stone::GetThreadName().c_str(), ##args))
-#define _ERR(fmt, args...)  (LOGE("\033[31m [%s]" fmt "\033[0m\n", Stone::GetThreadName().c_str(), ##args))
-#define _WRN(fmt, args...)  (LOGW("\033[33m [%s]" fmt "\033[0m\n", Stone::GetThreadName().c_str(), ##args))
-#define _DBG(fmt, args...)  (LOGD("\033[32m [%s]" fmt "\033[0m\n", Stone::GetThreadName().c_str(), ##args))
-#define _INFO(fmt, args...) (LOGI("\033[37m [%s]" fmt "\033[0m\n", Stone::GetThreadName().c_str(), ##args))
-
-#endif
 
 
 #endif

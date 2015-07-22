@@ -1,5 +1,5 @@
-#ifndef _ESSIE_ASYNCQUEUE_H_
-#define _ESSIE_ASYNCQUEUE_H_
+#ifndef _STONE_ASYNCQUEUE_H_
+#define _STONE_ASYNCQUEUE_H_
 
 #include "Macro.h"
 #include "Noncopyable.h"
@@ -9,7 +9,7 @@
 #include <cstdlib>
 #include <iostream>
 
-namespace Essie{
+namespace Stone{
 
 template<class T>
 struct SingleElement

@@ -1,12 +1,12 @@
-#ifndef _ESSIE_EXCEPTION_H_
-#define _ESSIE_EXCEPTION_H_
+#ifndef _STONE_EXCEPTION_H_
+#define _STONE_EXCEPTION_H_
 #include <sstream>
 #include <errno.h>
 #include <stdexcept>
 #include <system_error>
 #include <string.h>
 
-namespace Essie{
+namespace Stone{
 
 void throwSystemError(const char*);
 inline void throwSystemError(const char* msg)

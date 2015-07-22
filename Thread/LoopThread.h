@@ -1,5 +1,5 @@
-#ifndef _ESSIE_LOOP_THREAD_H_
-#define _ESSIE_LOOP_THREAD_H_
+#ifndef _STONE_LOOP_THREAD_H_
+#define _STONE_LOOP_THREAD_H_
 
 #include <string>
 #include <thread>
@@ -9,7 +9,7 @@
 #include <mutex>
 #include "EventLoop.h"
 
-namespace Essie{
+namespace Stone{
 
 class LoopThread : private Noncopyable
 {

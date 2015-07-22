@@ -1,5 +1,5 @@
-#ifndef _ESSIE_ASYNC_LIST_H_
-#define _ESSIE_ASYNC_LIST_H_
+#ifndef _STONE_ASYNC_LIST_H_
+#define _STONE_ASYNC_LIST_H_
 
 #include "Noncopyable.h"
 #include "Macro.h"
@@ -8,7 +8,7 @@
 #include <string.h>
 
 
-namespace Essie{
+namespace Stone{
 
 template<class T>
 struct Node ;

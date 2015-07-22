@@ -1,8 +1,8 @@
-#ifndef _ESSIE_IO_H_
-#define _ESSIE_IO_H_
+#ifndef _STONE_IO_H_
+#define _STONE_IO_H_
 #include <functional>
 
-namespace Essie{
+namespace Stone{
 
 class IO
 {
@@ -18,7 +18,7 @@ public:
 	int Index(){return Index_;}
 	void SetFd(int fd){Fd_ = fd;}
 	void SetIndex(int index){Index_ = index;}
-	void HandleEvent(int cond);
+	void HandleEvent(int cond){}
 	void SetCallback(EventCallback&& cb){ Callback_ = std::move(cb); }
 
 private:
