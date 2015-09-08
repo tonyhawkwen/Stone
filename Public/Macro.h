@@ -31,12 +31,13 @@ namespace Stone
 	std::string GetCurrentTime(void);
 }
 
+#include <libgen.h>
 #include <stdio.h>
-#define _PRI(fmt, args...)  printf("\033[34m [%s][%s][%s:%d]" fmt "\033[0m\n", Stone::GetCurrentTime().c_str(), Stone::GetThreadName().c_str(), __func__, __LINE__, ##args)
-#define _ERR(fmt, args...)  printf("\033[31m [%s][%s][%s:%d]" fmt "\033[0m\n", Stone::GetCurrentTime().c_str(), Stone::GetThreadName().c_str(), __func__, __LINE__, ##args)
-#define _WRN(fmt, args...)  printf("\033[33m [%s][%s][%s:%d]" fmt "\033[0m\n", Stone::GetCurrentTime().c_str(), Stone::GetThreadName().c_str(), __func__, __LINE__, ##args)
-#define _DBG(fmt, args...)  printf("\033[32m [%s][%s][%s:%d]" fmt "\033[0m\n", Stone::GetCurrentTime().c_str(), Stone::GetThreadName().c_str(), __func__, __LINE__, ##args)
-#define _INFO(fmt, args...) printf("\033[37m [%s][%s][%s:%d]" fmt "\033[0m\n", Stone::GetCurrentTime().c_str(), Stone::GetThreadName().c_str(), __func__, __LINE__, ##args)
+#define _PRI(fmt, args...)  printf("\033[34m [%s][%s][%s %s:%d]" fmt "\033[0m\n", Stone::GetCurrentTime().c_str(), Stone::GetThreadName().c_str(), basename((char*)__FILE__), __func__, __LINE__, ##args)
+#define _ERR(fmt, args...)  printf("\033[31m [%s][%s][%s %s:%d]" fmt "\033[0m\n", Stone::GetCurrentTime().c_str(), Stone::GetThreadName().c_str(), basename((char*)__FILE__), __func__, __LINE__, ##args)
+#define _WRN(fmt, args...)  printf("\033[33m [%s][%s][%s %s:%d]" fmt "\033[0m\n", Stone::GetCurrentTime().c_str(), Stone::GetThreadName().c_str(), basename((char*)__FILE__), __func__, __LINE__, ##args)
+#define _DBG(fmt, args...)  printf("\033[32m [%s][%s][%s %s:%d]" fmt "\033[0m\n", Stone::GetCurrentTime().c_str(), Stone::GetThreadName().c_str(), basename((char*)__FILE__), __func__, __LINE__, ##args)
+#define _INFO(fmt, args...) printf("\033[37m [%s][%s][%s %s:%d]" fmt "\033[0m\n", Stone::GetCurrentTime().c_str(), Stone::GetThreadName().c_str(), basename((char*)__FILE__), __func__, __LINE__, ##args)
 
 
 

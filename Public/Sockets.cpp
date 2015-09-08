@@ -1,3 +1,8 @@
+#include <unistd.h>
+#include <netinet/tcp.h>
+#include <errno.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sstream>
@@ -10,22 +15,31 @@ namespace Stone
 
 int Socket::Create(int& error)
 {
-	int sockfd = socket(AF_UNIX, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
+	_DBG("Socket::Create");
+	//int sockfd = socket(AF_UNIX, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
+	int sockfd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
 	if (sockfd < 0)
 	{
 		error = errno;
 		return -1;
 	}
+	int reuse = 1;
+	setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(int));
+	setsockopt(sockfd, SOL_SOCKET, SO_REUSEPORT, &reuse, sizeof(int));
+	int nodelay = 1;
+    setsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY, &nodelay, sizeof(nodelay));
 
 	return sockfd;
 }
 
-bool Socket::Bind(int& sockfd, const std::string& path, int& error)
+bool Socket::Bind(int& sockfd, unsigned short port, int& error)
 {
-	struct sockaddr_un addr;
-	memset(addr, 0, sizeof(addr));
-	addr.sun_family=AF_UNIX;
-	strncpy(addr.sun_path, path.c_str(),sizeof(addr.sun_path)-1);
+	_DBG("Socket::Bind port:%u", port);
+	struct sockaddr_in addr;
+	memset(&addr, 0, sizeof(addr));
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(port);
+	addr.sin_addr.s_addr = INADDR_ANY;
 
 	if (bind(sockfd, (struct sockaddr*) &addr, sizeof(addr)) < 0)
 	{
@@ -34,11 +48,13 @@ bool Socket::Bind(int& sockfd, const std::string& path, int& error)
 		return false;
 	}
 
+	_DBG("Socket::Bind succuss!");
 	return true;
 }
 
 bool Socket::Listen(int sockfd, int& error)
 {
+	_DBG("Socket::Listen");
 	int ret = listen(sockfd, SOMAXCONN);
 	if (ret < 0)
 	{
@@ -49,12 +65,11 @@ bool Socket::Listen(int sockfd, int& error)
 	return true;
 }
 
-int Socket::Accept(int sockfd, std::string& client, int& error)
+int Socket::Accept(int sockfd, struct sockaddr_in& addr, int& error)
 {
-	struct sockaddr_un addr;
-	int len=sizeof(addr);
+	socklen_t len=sizeof(addr);
 	int connfd = accept4(sockfd, (struct sockaddr*) &addr, &len, SOCK_NONBLOCK | SOCK_CLOEXEC);
-	if (connfd < 0)
+	if(connfd < 0)
 	{
 		error = errno;
 		switch (error)
@@ -78,14 +93,21 @@ int Socket::Accept(int sockfd, std::string& client, int& error)
 			break;
 		}
 	}
+	
+	int nodelay = 1;
+	if(setsockopt(connfd, IPPROTO_TCP, TCP_NODELAY, &nodelay, sizeof(nodelay)) == -1)
+	{
+		_ERR("setsockopt fd(%d) no delay fail:%s", connfd, strerror(errno));
+	}
 
 	return connfd;
 }
 
+//to be changed
 int Socket::Connect(int& sockfd, const std::string& dest, int& error)
 {
-	struct sockaddr_un addr;
-	memset(addr, 0, sizeof(addr));
+	/*struct sockaddr_un addr;
+	memset(&addr, 0, sizeof(addr));
 	addr.sun_family=AF_UNIX;
 	strncpy(addr.sun_path, dest.c_str(),sizeof(addr.sun_path)-1);
 	
@@ -96,7 +118,8 @@ int Socket::Connect(int& sockfd, const std::string& dest, int& error)
 		Close(sockfd);
 	}
 
-	return connfd;
+	return connfd;*/
+	return -1;
 }
 
 void Socket::Close(int& sockfd)

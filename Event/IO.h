@@ -18,7 +18,7 @@ public:
 	int Index(){return Index_;}
 	void SetFd(int fd){Fd_ = fd;}
 	void SetIndex(int index){Index_ = index;}
-	void HandleEvent(int cond){}
+	void HandleEvent(int cond){if(Callback_)Callback_(cond);}
 	void SetCallback(EventCallback&& cb){ Callback_ = std::move(cb); }
 
 private:

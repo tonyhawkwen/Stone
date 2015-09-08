@@ -126,10 +126,16 @@ bool EventLoopL::Prepare()
 
 			if(ev == NULL)
 			{
-				_ERR("event_new fail!");
+				_ERR("event_new fail, index %d", io->Index());
 				continue;
 			}
 			data->ev = ev;
+
+			if(event_add(ev, NULL))
+			{
+				_ERR("event_add fail, index %d!", io->Index());
+				continue;
+			}
 		}
 	}
 
@@ -268,6 +274,7 @@ void EventLoopL::Quit()
 
 void EventLoopL::quitAsync(int cond)
 {
+	_DBG("quitAsync!");
 	eventfd_t quit = 1;
 	eventfd_read(Wakeup_->Fd(), &quit);
 

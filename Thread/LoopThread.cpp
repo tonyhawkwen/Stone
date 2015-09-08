@@ -19,6 +19,7 @@ LoopThread::~LoopThread()
 
 void LoopThread::Destroy()
 {
+	_DBG("LoopThread::Destroy()");
 	if(std::this_thread::get_id() != Creator_)
 	{
 		_ERR("only creator thread can destroy this thread!");
@@ -81,7 +82,7 @@ void LoopThread::threadProcess()
 
 			Loop_.reset(new EventLoopL());
 
-			if (Callback_ && (!Callback_(Loop_)))
+			if (Callback_ && (!Callback_()))
 			{
 				break;
 			}

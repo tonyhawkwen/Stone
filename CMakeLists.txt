@@ -14,15 +14,17 @@ INCLUDE_DIRECTORIES(${PKGS_INCLUDE_DIRS})
 INCLUDE_DIRECTORIES(Data
                     Event
                     Public
+                    Channel
                     Thread)
 
 
 SET(SRC_LIST Event/EventLoop_LibEvent.cpp
-	    # Public/Sockets.cpp
+             Public/Sockets.cpp
              Public/Times.cpp
              Thread/LoopThread.cpp
-	     Thread/ThreadPool.cpp
-	     GTest/Main.cpp
+			 Channel/TcpChannel.cpp
+             Thread/ThreadPool.cpp
+			 Server.cpp
 	)
 
 MESSAGE("${CMAKE_CXX_FLAGS}")

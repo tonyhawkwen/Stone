@@ -196,7 +196,8 @@ public:
 			}
 
 			//if queue is full(the last item will be kept empty to make sure commit index is always larger than read index), return false
-			if(nextWrite == RCommitIndex_.load(std::memory_order_acquire))
+			auto curRCommit = RCommitIndex_.load(std::memory_order_acquire);
+			if(nextWrite == curRCommit)
 			{
 				return false;
 			}
@@ -208,9 +209,10 @@ public:
 		//when current commit index goes to current write, commit the write and let read index know
 		auto tmpCommit = curWrite;
 		auto tmpNextCommit = curWrite;
-
+		int i = 0;
 		do
 		{
+			i++;
 			tmpCommit = curWrite;
 			tmpNextCommit = curWrite + 1;
 			if(tmpNextCommit == Size_)

@@ -14,12 +14,14 @@ namespace Stone{
 class LoopThread : private Noncopyable
 {
 public:
-	typedef std::function<bool(std::unique_ptr<EventLoop>&)> InitCallback;
+	typedef std::function<bool(void)> InitCallback;
 
 	LoopThread(std::string threadName, const InitCallback& cb = InitCallback());
 	~LoopThread();
 	bool Create();
 	void Destroy();
+	bool AddLoopIO(std::shared_ptr<IO>& io){return Loop_->AddIO(io);}
+	void RemoveLoopIO(std::weak_ptr<IO>& wio){Loop_->RemoveIO(wio);}
 
  private:
 	void threadProcess();
