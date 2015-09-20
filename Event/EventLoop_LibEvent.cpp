@@ -258,6 +258,13 @@ void EventLoopL::Quit()
 	if(std::this_thread::get_id()  == Creator_)
 	{
 		_DBG("Quit!");
+	  	for(auto &i : Datas_)
+    	{   
+        	if(i)
+        	{
+            	RemoveIO(i->io);
+        	}
+    	}
 		event_base_loopexit(EventBase_, NULL);
 		//or event_base_loopbreak(EventBase_);
 	}
@@ -277,6 +284,14 @@ void EventLoopL::quitAsync(int cond)
 	_DBG("quitAsync!");
 	eventfd_t quit = 1;
 	eventfd_read(Wakeup_->Fd(), &quit);
+
+	for(auto &i : Datas_)                                     
+    {   
+        if(i)                                                 
+        {   
+            RemoveIO(i->io);                                  
+        }                                                     
+    } 
 
 	event_base_loopexit(EventBase_, NULL);
 	//or event_base_loopbreak(EventBase_);

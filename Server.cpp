@@ -4,8 +4,10 @@
 #include "LoopThread.h"
 #include "TcpChannel.h"
 #include "Macro.h"
-
+#include <string.h>
 using namespace Stone;
+
+#define MEM_SIZE 1024
 
 //temp code, to be moved to specific class
 TcpChannel* channel = nullptr;
@@ -86,3 +88,4 @@ int main(void)
 	_PRI("End server!");      
     return 0;
 }
+
