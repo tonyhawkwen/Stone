@@ -35,14 +35,7 @@ EventLoopL::EventLoopL()
 
 EventLoopL::~EventLoopL()
 {
-	for(auto &i : Datas_)
-	{
-		if(i)
-		{
-			RemoveIO(i->io);
-		}
-	}
-
+	removeAllIO();
 	if(EventConfig_)
 	{
 		event_config_free(EventConfig_);
@@ -253,18 +246,29 @@ void EventLoopL::Loop()
 	event_base_dispatch(EventBase_);
 }
 
+void EventLoopL::removeAllIO()
+{
+	for(int i = 0; i < CurIndex_; ++i)
+	{
+		if(Datas_[i] && Datas_[i]->ev)
+		{
+			event_del(Datas_[i]->ev);
+			event_free(Datas_[i]->ev);
+			Datas_[i]->ev = NULL;
+		}
+	}
+
+	CurIndex_ = 0;
+	std::queue<int> tmp;
+	IdleIndexs_.swap(tmp);
+}
+
 void EventLoopL::Quit()
 {
 	if(std::this_thread::get_id()  == Owner_)
 	{
 		_DBG("Quit!");
-	  	for(auto &i : Datas_)
-    	{   
-        	if(i)
-        	{
-            	RemoveIO(i->io);
-        	}
-    	}
+		removeAllIO();
 		event_base_loopexit(EventBase_, NULL);
 		//or event_base_loopbreak(EventBase_);
 	}
@@ -285,14 +289,7 @@ void EventLoopL::quitAsync(int cond)
 	eventfd_t quit = 1;
 	eventfd_read(Wakeup_->Fd(), &quit);
 
-	for(auto &i : Datas_)                                     
-    {   
-        if(i)                                                 
-        {   
-            RemoveIO(i->io);                                  
-        }                                                     
-    } 
-
+	removeAllIO();
 	event_base_loopexit(EventBase_, NULL);
 	//or event_base_loopbreak(EventBase_);
 }

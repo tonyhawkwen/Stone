@@ -33,6 +33,7 @@ public:
 
 private:
 	void quitAsync(int);
+	void removeAllIO();
 
 	std::thread::id Owner_;
 	struct event_config* EventConfig_;
