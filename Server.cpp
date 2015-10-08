@@ -1,13 +1,14 @@
 #include <iostream>
 #include <signal.h>
 #include <event.h>
+#include <gflags/gflags.h>
 #include "EventLoop_LibEvent.h"
 #include "LoopThread.h"
 #include "TcpChannel.h"
 #include "Macro.h"
-#include <string.h>
 using namespace Stone;
 
+DEFINE_int32(port, 0, "What port to listen on");
 #define MEM_SIZE 1024
 
 //temp code, to be moved to specific class
@@ -55,11 +56,12 @@ void OnRead(int sockfd, const InetAddress& addr)
 	server->AddLoopIO(readIO);
 }
 
-int main(void)
+int main(int argc, char** argv)
 {
     _PRI("Begin server...");
 	SingalHandle();
-	
+	google::ParseCommandLineFlags(&argc, &argv, true);
+
 	std::unique_ptr<EventLoop> loop(new EventLoopL());
 	
 	_PRI("Add socket IO begin...:");

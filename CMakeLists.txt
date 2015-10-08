@@ -5,7 +5,9 @@ PROJECT (Stone)
 INCLUDE(FindPkgConfig)
 
 PKG_CHECK_MODULES(PKGS REQUIRED
-                  libevent)
+				  libevent
+				  libgflags
+				  )
 
 
 INCLUDE_DIRECTORIES(${PKGS_INCLUDE_DIRS})
