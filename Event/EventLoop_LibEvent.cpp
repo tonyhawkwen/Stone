@@ -26,7 +26,7 @@ static void CEventCallBack(evutil_socket_t fd, short cond, void * arg)
 }
 
 EventLoopL::EventLoopL()
-	:Creator_(std::this_thread::get_id()),
+	:Owner_(std::this_thread::get_id()),
 	EventConfig_(NULL),
 	EventBase_(NULL),
 	CurIndex_(0)
@@ -154,7 +154,7 @@ bool EventLoopL::Prepare()
 
 bool EventLoopL::AddIO(std::shared_ptr<IO>& io)
 {
-	if(std::this_thread::get_id() != Creator_)
+	if(std::this_thread::get_id() != Owner_)
 	{
 		_ERR("You can only add IO in the thread that creates this event loop!");
  		return false;
@@ -222,7 +222,7 @@ bool EventLoopL::AddIO(std::shared_ptr<IO>& io)
 
 void EventLoopL::RemoveIO(std::weak_ptr<IO>& wio)
 {
-	if(std::this_thread::get_id() != Creator_)
+	if(std::this_thread::get_id() != Owner_)
 	{
 		_ERR("You can only remove IO in the thread that creates this event loop!");
  		return;
@@ -255,7 +255,7 @@ void EventLoopL::Loop()
 
 void EventLoopL::Quit()
 {
-	if(std::this_thread::get_id()  == Creator_)
+	if(std::this_thread::get_id()  == Owner_)
 	{
 		_DBG("Quit!");
 	  	for(auto &i : Datas_)

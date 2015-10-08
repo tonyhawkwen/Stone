@@ -16,12 +16,26 @@ class LoopThread : private Noncopyable
 public:
 	typedef std::function<bool(void)> InitCallback;
 
-	LoopThread(std::string threadName, const InitCallback& cb = InitCallback());
+	LoopThread( std::string threadName, 
+			   const InitCallback& cb = InitCallback());
 	~LoopThread();
-	bool Create();
+	bool Create(std::unique_ptr<EventLoop>& loop);
 	void Destroy();
-	bool AddLoopIO(std::shared_ptr<IO>& io){return Loop_->AddIO(io);}
-	void RemoveLoopIO(std::weak_ptr<IO>& wio){Loop_->RemoveIO(wio);}
+	bool AddLoopIO(std::shared_ptr<IO> &io)
+	{
+		if(Loop_)
+		{
+			return Loop_->AddIO(io);
+		}
+		return false;
+	}
+	void RemoveLoopIO(std::weak_ptr<IO>& io)
+	{
+		if(Loop_)
+		{
+			Loop_->RemoveIO(io);
+		}
+	}
 
  private:
 	void threadProcess();

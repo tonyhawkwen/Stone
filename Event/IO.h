@@ -1,6 +1,7 @@
 #ifndef _STONE_IO_H_
 #define _STONE_IO_H_
 #include <functional>
+#include <iostream>
 
 namespace Stone{
 

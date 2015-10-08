@@ -1,6 +1,7 @@
 #include <iostream>
 #include <signal.h>
 #include <event.h>
+#include "EventLoop_LibEvent.h"
 #include "LoopThread.h"
 #include "TcpChannel.h"
 #include "Macro.h"
@@ -54,37 +55,36 @@ void OnRead(int sockfd, const InetAddress& addr)
 	server->AddLoopIO(readIO);
 }
 
-bool AddSocketIO()
-{
-    _PRI("Add socket IO begin...:");
-
-	TcpChannel* channel = new TcpChannel;
-	if(!channel->Create())
-	{
-		_ERR("create tcp channel fail!");
-		return false;
-	}
-	channel->SetReadCallback(OnRead);
-	server->AddLoopIO(channel->TcpIO());
-	channel->Listen();
-
-    return true;
-}
-
 int main(void)
 {
     _PRI("Begin server...");
 	SingalHandle();
-    server = new LoopThread("SocketServer", AddSocketIO);
-    server->Create();
+	
+	std::unique_ptr<EventLoop> loop(new EventLoopL());
+	
+	_PRI("Add socket IO begin...:");
+	channel = new TcpChannel;
+    if(!channel->Create())
+	{
+		_ERR("create tcp channel fail!");
+		return -1;
+	}
+
+	channel->SetReadCallback(OnRead);
+	loop->AddIO(channel->TcpIO());
+	channel->Listen();
+
+	//after this line, you can not use loop variable anymore
+	server = new LoopThread("SocketServer");
+    server->Create(loop);
 
 	while(!gExitServer)
 	{
 		sleep(1);
 	}
 
-	delete channel;
 	delete server;
+	delete channel;
 	_PRI("End server!");      
     return 0;
 }

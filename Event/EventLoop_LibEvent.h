@@ -24,6 +24,9 @@ public:
 	bool Prepare();
 	bool AddIO(std::shared_ptr<IO>& io);
 	void RemoveIO(std::weak_ptr<IO>& io);
+	void SetOwner(std::thread::id owner) {
+		Owner_ = owner;
+	}
 	void Loop();
 	void Quit();
 	void EventLoopCallBack(int index, short cond);
@@ -31,7 +34,7 @@ public:
 private:
 	void quitAsync(int);
 
-	std::thread::id Creator_;
+	std::thread::id Owner_;
 	struct event_config* EventConfig_;
 	struct event_base* EventBase_;
 	std::unique_ptr<LoopData> Datas_[MAX_EVENTS_SIZE];

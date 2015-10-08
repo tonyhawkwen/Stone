@@ -40,7 +40,7 @@ void LoopThread::Destroy()
 	}
 }
 
-bool LoopThread::Create()
+bool LoopThread::Create(std::unique_ptr<EventLoop>& loop)
 {
 	std::lock_guard<std::mutex> lock(Mutex_);
 	Creator_ = std::this_thread::get_id();
@@ -48,6 +48,7 @@ bool LoopThread::Create()
 	bool ret = false;
 	try
 	{
+		Loop_ = std::move(loop);
 		std::future<bool> fut = Created_.get_future();
 		Thread_ .reset(new std::thread(&LoopThread::threadProcess, this));
 
@@ -75,13 +76,13 @@ void LoopThread::threadProcess()
 		bool ret = false;
 		do
 		{
-			if(Loop_)
+			if(!Loop_)
 			{
-				break;
+				Loop_.reset(new EventLoopL());
 			}
 
-			Loop_.reset(new EventLoopL());
-
+			Loop_->SetOwner(std::this_thread::get_id());
+			
 			if (Callback_ && (!Callback_()))
 			{
 				break;
