@@ -20,11 +20,11 @@ LoopThread::~LoopThread()
 void LoopThread::Destroy()
 {
 	_DBG("LoopThread::Destroy()");
-	if(std::this_thread::get_id() != Creator_)
+	/*if(std::this_thread::get_id() != Creator_)
 	{
 		_ERR("only creator thread can destroy this thread!");
 		return;
-	}
+	}*/
 
 	std::lock_guard<std::mutex> lock(Mutex_);
 	if (Loop_)
