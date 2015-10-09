@@ -19,7 +19,7 @@ public:
 	LoopThread( std::string threadName, 
 			   const InitCallback& cb = InitCallback());
 	~LoopThread();
-	bool Create(std::unique_ptr<EventLoop>& loop);
+	bool Create(std::unique_ptr<EventLoop>&& loop);
 	void Destroy();
 	bool AddLoopIO(std::shared_ptr<IO> &io)
 	{

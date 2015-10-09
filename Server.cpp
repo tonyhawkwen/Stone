@@ -6,6 +6,7 @@
 #include "LoopThread.h"
 #include "TcpChannel.h"
 #include "Macro.h"
+#include "RWSpinLock.h"
 using namespace Stone;
 
 DEFINE_int32(port, 0, "What port to listen on");
@@ -15,8 +16,6 @@ DEFINE_int32(port, 0, "What port to listen on");
 TcpChannel* channel = nullptr;
 LoopThread* server = nullptr;
 std::shared_ptr<IO> readIO;
-
-
 bool gExitServer = false;
 
 void SignalQuit(int signo)
@@ -78,7 +77,7 @@ int main(int argc, char** argv)
 
 	//after this line, you can not use loop variable anymore
 	server = new LoopThread("SocketServer");
-    server->Create(loop);
+    server->Create(std::move(loop));
 
 	while(!gExitServer)
 	{

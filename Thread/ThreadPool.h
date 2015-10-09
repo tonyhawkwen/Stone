@@ -100,7 +100,7 @@ public:
 	}
 
 private:
-	void start(int numThreads);
+	void start(int numThreads); // std::thread::hardware_concurrency() is suggested
 	void stop();
 	void run(std::string thread);
 	FunctionWrapper take(const std::string& thread);

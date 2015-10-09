@@ -40,7 +40,7 @@ void LoopThread::Destroy()
 	}
 }
 
-bool LoopThread::Create(std::unique_ptr<EventLoop>& loop)
+bool LoopThread::Create(std::unique_ptr<EventLoop>&& loop)
 {
 	std::lock_guard<std::mutex> lock(Mutex_);
 	Creator_ = std::this_thread::get_id();
