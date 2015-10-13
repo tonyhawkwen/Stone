@@ -65,7 +65,7 @@ bool EventLoopL::Prepare()
 
 	//event_config_avoid_method(EventConfig_, "select");//avoid select
 	//event_config_avoid_method(EventConfig_, "poll");//avoid poll
-	if(0 != event_config_require_features(EventConfig_, EV_FEATURE_O1))//EV_FEATURE_ET ?
+	if(0 != event_config_require_features(EventConfig_, EV_FEATURE_O1))// ?EV_FEATURE_O1
 	{
 		_ERR("set event config feature fail!");
 		return false;
@@ -107,7 +107,7 @@ bool EventLoopL::Prepare()
 				continue;
 			}
 			
-			if(data->ev)
+			if(data->ev)//FIXME:timer event
 			{
 				event_del(data->ev);
 				event_free(data->ev);
@@ -124,7 +124,7 @@ bool EventLoopL::Prepare()
 			}
 			data->ev = ev;
 
-			if(event_add(ev, NULL))
+			if(event_add(ev, io->Timeval()))
 			{
 				_ERR("event_add fail, index %d!", io->Index());
 				continue;
@@ -155,6 +155,12 @@ bool EventLoopL::AddIO(std::shared_ptr<IO>& io)
 
 	if(io->Index() >= 0)
 	{
+		//for timer event
+		if(io->Fd() == -1 && Datas_[io->Index()]
+			&& Datas_[io->Index()]->ev && EventBase_ != NULL)
+		{
+			return event_add(Datas_[io->Index()]->ev, io->Timeval()) ? false : true;
+		}
 		_ERR("This IO has been added!");
  		return false;
 	}
@@ -195,7 +201,6 @@ bool EventLoopL::AddIO(std::shared_ptr<IO>& io)
 	Datas_[idx].reset(new LoopData(std::move(f)));
 	Datas_[idx]->io = io;
 	io->SetIndex(idx);
-	
 	if(EventBase_ != NULL)
 	{
 		event* ev = event_new(EventBase_, io->Fd(), io->Condition(), CEventCallBack, (void*)&(Datas_[idx]->fn));	
@@ -207,7 +212,7 @@ bool EventLoopL::AddIO(std::shared_ptr<IO>& io)
 		}
 		Datas_[idx]->ev = ev;
 
-		return event_add(ev, NULL) ? false : true;
+		return event_add(ev, io->Timeval()) ? false : true;
 	}
 
 	return true;
@@ -215,6 +220,7 @@ bool EventLoopL::AddIO(std::shared_ptr<IO>& io)
 
 void EventLoopL::RemoveIO(std::weak_ptr<IO>& wio)
 {
+	_ERR("RemoveIO!");
 	if(std::this_thread::get_id() != Owner_)
 	{
 		_ERR("You can only remove IO in the thread that creates this event loop!");
@@ -296,7 +302,7 @@ void EventLoopL::quitAsync(int cond)
 
 void EventLoopL::EventLoopCallBack(int index, short cond)
 {
-	_DBG("Current index is %d", index);
+	//_DBG("Current index is %d", index);
 	if(index < 0)
 	{
 		_ERR("Current index is %d, below 0", index);

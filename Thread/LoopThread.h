@@ -36,8 +36,12 @@ public:
 			Loop_->RemoveIO(io);
 		}
 	}
-
- private:
+	static LoopThread* GetLocalLoopThread() 
+	{
+		return sLoop_;
+	}
+ 
+private:
 	void threadProcess();
 
 	std::string Name_;
@@ -47,6 +51,8 @@ public:
 	std::promise<bool> Created_;
 	InitCallback Callback_;
 	std::mutex Mutex_;
+
+	static thread_local LoopThread* sLoop_;
 };
 
 }

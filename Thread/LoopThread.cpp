@@ -6,6 +6,8 @@
 
 namespace Stone{
 
+thread_local LoopThread* LoopThread::sLoop_ = nullptr;
+
 LoopThread::LoopThread(std::string threadName, const InitCallback& cb)
 	:Name_(threadName),
 	Callback_(cb)
@@ -91,7 +93,13 @@ void LoopThread::threadProcess()
 			ret = Loop_->Prepare();
 		}while(0);
 
+		if(ret)
+		{
+			sLoop_ = this;
+		}
+
 		Created_.set_value(ret);
+		
 		if(!ret)
 		{
 			_ERR("Loop prepare fail!");
@@ -115,6 +123,7 @@ void LoopThread::threadProcess()
 
 	Loop_->Loop();
 
+	sLoop_ = nullptr;
 	_DBG("threadProcess end.");
 }
 

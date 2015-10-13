@@ -36,7 +36,7 @@ public:
 	bool IsListenning(){return Listenning_;}
 	void Listen();
 	std::shared_ptr<IO>& TcpIO(){return TcpIO_;}
-	void SetReadCallback(const ReadCallback& cb){Callback_ = cb;}
+	void SetReadCallback(const ReadCallback& cb){Callback_ = std::move(cb);}
 
 private:
 	void handleRead(int cond);
