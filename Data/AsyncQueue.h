@@ -25,7 +25,7 @@ template<class T>
 class AsyncQueue : private Noncopyable
 {
 
-static_assert(std::is_nothrow_constructible<T,T&&>::value, "T must have a noexcept move constructor");
+//static_assert(std::is_nothrow_constructible<T,T&&>::value, "T must have a noexcept move constructor");
 
 public:
 	AsyncQueue()

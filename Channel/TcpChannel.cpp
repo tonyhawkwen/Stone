@@ -16,7 +16,7 @@ bool TcpChannel::Create()
 		return false;
 	}
 
-	if(!Socket::Bind(fd, 1080, error))
+	if(!Socket::Bind(fd, Port_, error))
 	{
 		_ERR("Bind socket %d fail", fd);
 		return false;

@@ -17,7 +17,8 @@ INCLUDE_DIRECTORIES(Data
                     Event
                     Public
                     Channel
-                    Thread)
+                    Thread
+					Service)
 
 
 SET(SRC_LIST Event/EventLoop_LibEvent.cpp
@@ -26,6 +27,7 @@ SET(SRC_LIST Event/EventLoop_LibEvent.cpp
              Thread/LoopThread.cpp
 			 Channel/TcpChannel.cpp
              Thread/ThreadPool.cpp
+			 Service/TcpServer.cpp
 			 Server.cpp
 	)
 

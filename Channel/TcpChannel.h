@@ -22,6 +22,14 @@ public:
 	typedef std::function<void(int sockfd, const InetAddress&)> ReadCallback;
 
 	TcpChannel():
+		Port_(1080),
+		Listenning_(false),
+		IdleFd_(open("/dev/null", O_RDONLY | O_CLOEXEC))
+		{
+		}
+
+	TcpChannel(unsigned short port):
+		Port_(port),
 		Listenning_(false),
 		IdleFd_(open("/dev/null", O_RDONLY | O_CLOEXEC))
 		{
@@ -41,6 +49,7 @@ public:
 private:
 	void handleRead(int cond);
 	
+	unsigned short Port_;
 	std::shared_ptr<IO> TcpIO_;
 	bool Listenning_;
 	ReadCallback Callback_;

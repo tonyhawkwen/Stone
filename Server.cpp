@@ -2,20 +2,13 @@
 #include <signal.h>
 #include <event.h>
 #include <gflags/gflags.h>
-#include "EventLoop_LibEvent.h"
-#include "LoopThread.h"
-#include "TcpChannel.h"
+#include "TcpServer.h"
 #include "Macro.h"
-#include "RWSpinLock.h"
 using namespace Stone;
 
 DEFINE_int32(port, 0, "What port to listen on");
 #define MEM_SIZE 1024
 
-//temp code, to be moved to specific class
-TcpChannel* channel = nullptr;
-LoopThread* server = nullptr;
-std::shared_ptr<IO> readIO;
 bool gExitServer = false;
 
 void SignalQuit(int signo)
@@ -32,60 +25,23 @@ void SingalHandle()
     signal(SIGTERM, SignalQuit);
 }
 
-void DoRead(int cond)
-{
-	_PRI("Do Read...");
-	char buff[4096] = {0,};
-	int size = recv(readIO->Fd(), buff, 4095, 0);
-	buff[size] = '\0';
-	_PRI("Get Data %s", buff);
-	if(size <= 0)
-	{
-		std::weak_ptr<IO> wio(readIO);
-		server->RemoveLoopIO(wio);
-		close(readIO->Fd());
-	}
-}
-
-void OnRead(int sockfd, const InetAddress& addr)
-{
-	_PRI("Fd %d From IP:%s, Port:%u", sockfd, addr.saddr.c_str(), addr.port);
-	readIO.reset(new IO(sockfd, EV_READ | EV_PERSIST));
-	readIO->SetCallback(std::bind(DoRead, std::placeholders::_1));
-	server->AddLoopIO(readIO);
-}
-
 int main(int argc, char** argv)
 {
     _PRI("Begin server...");
 	SingalHandle();
 	google::ParseCommandLineFlags(&argc, &argv, true);
 
-	std::unique_ptr<EventLoop> loop(new EventLoopL());
-	
-	_PRI("Add socket IO begin...:");
-	channel = new TcpChannel;
-    if(!channel->Create())
-	{
-		_ERR("create tcp channel fail!");
-		return -1;
-	}
-
-	channel->SetReadCallback(OnRead);
-	loop->AddIO(channel->TcpIO());
-	channel->Listen();
-
-	//after this line, you can not use loop variable anymore
-	server = new LoopThread("SocketServer");
-    server->Create(std::move(loop));
+	_PRI("Start tcp server begin...:");
+	TcpServer* server = new TcpServer;
+	server->Start();
 
 	while(!gExitServer)
 	{
 		sleep(1);
 	}
 
+	server->Stop();
 	delete server;
-	delete channel;
 	_PRI("End server!");      
     return 0;
 }
