@@ -28,22 +28,23 @@ bool TcpChannel::Create()
 	return true;
 }
 
-void TcpChannel::Listen()
+bool TcpChannel::Listen()
 {
 	if(Listenning_)
 	{
 		_DBG("Tcp channel is already listenning.");
-		return;
+		return true;
 	}
 
 	int error;
 	if(!Socket::Listen(TcpIO_->Fd(), error))
 	{
 		_ERR("Listen fail! Fd:%d, Error:%d", TcpIO_->Fd(), error);
-		return;
+		return false;
 	}
 
 	Listenning_ = true;
+	return true;
 }
 
 void TcpChannel::handleRead(int cond)

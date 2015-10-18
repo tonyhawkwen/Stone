@@ -6,20 +6,14 @@
 #include <memory>
 #include "Noncopyable.h"
 #include "IO.h"
+#include "InetAddress.h"
 
 namespace Stone{
-
-struct InetAddress
-{
-	uint32_t addr;
-	std::string saddr;
-	uint16_t port;
-};
 
 class TcpChannel : private Noncopyable
 {
 public:
-	typedef std::function<void(int sockfd, const InetAddress&)> ReadCallback;
+	typedef std::function<void(int sockfd, InetAddress&)> ReadCallback;
 
 	TcpChannel():
 		Port_(1080),
@@ -42,9 +36,10 @@ public:
 
 	bool Create();
 	bool IsListenning(){return Listenning_;}
-	void Listen();
+	bool Listen();
 	std::shared_ptr<IO>& TcpIO(){return TcpIO_;}
-	void SetReadCallback(const ReadCallback& cb){Callback_ = std::move(cb);}
+	void SetReadCallback(const ReadCallback& cb){Callback_ = cb;}
+	void SetReadCallback(ReadCallback&& cb){Callback_ = std::move(cb);}
 
 private:
 	void handleRead(int cond);

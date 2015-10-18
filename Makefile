@@ -135,6 +135,30 @@ Channel/TcpChannel.cpp.s:
 	$(MAKE) -f CMakeFiles/stone.dir/build.make CMakeFiles/stone.dir/Channel/TcpChannel.cpp.s
 .PHONY : Channel/TcpChannel.cpp.s
 
+Channel/TcpConnection.o: Channel/TcpConnection.cpp.o
+.PHONY : Channel/TcpConnection.o
+
+# target to build an object file
+Channel/TcpConnection.cpp.o:
+	$(MAKE) -f CMakeFiles/stone.dir/build.make CMakeFiles/stone.dir/Channel/TcpConnection.cpp.o
+.PHONY : Channel/TcpConnection.cpp.o
+
+Channel/TcpConnection.i: Channel/TcpConnection.cpp.i
+.PHONY : Channel/TcpConnection.i
+
+# target to preprocess a source file
+Channel/TcpConnection.cpp.i:
+	$(MAKE) -f CMakeFiles/stone.dir/build.make CMakeFiles/stone.dir/Channel/TcpConnection.cpp.i
+.PHONY : Channel/TcpConnection.cpp.i
+
+Channel/TcpConnection.s: Channel/TcpConnection.cpp.s
+.PHONY : Channel/TcpConnection.s
+
+# target to generate assembly for a file
+Channel/TcpConnection.cpp.s:
+	$(MAKE) -f CMakeFiles/stone.dir/build.make CMakeFiles/stone.dir/Channel/TcpConnection.cpp.s
+.PHONY : Channel/TcpConnection.cpp.s
+
 Event/EventLoop_LibEvent.o: Event/EventLoop_LibEvent.cpp.o
 .PHONY : Event/EventLoop_LibEvent.o
 
@@ -231,6 +255,30 @@ Server.cpp.s:
 	$(MAKE) -f CMakeFiles/stone.dir/build.make CMakeFiles/stone.dir/Server.cpp.s
 .PHONY : Server.cpp.s
 
+Service/TcpServer.o: Service/TcpServer.cpp.o
+.PHONY : Service/TcpServer.o
+
+# target to build an object file
+Service/TcpServer.cpp.o:
+	$(MAKE) -f CMakeFiles/stone.dir/build.make CMakeFiles/stone.dir/Service/TcpServer.cpp.o
+.PHONY : Service/TcpServer.cpp.o
+
+Service/TcpServer.i: Service/TcpServer.cpp.i
+.PHONY : Service/TcpServer.i
+
+# target to preprocess a source file
+Service/TcpServer.cpp.i:
+	$(MAKE) -f CMakeFiles/stone.dir/build.make CMakeFiles/stone.dir/Service/TcpServer.cpp.i
+.PHONY : Service/TcpServer.cpp.i
+
+Service/TcpServer.s: Service/TcpServer.cpp.s
+.PHONY : Service/TcpServer.s
+
+# target to generate assembly for a file
+Service/TcpServer.cpp.s:
+	$(MAKE) -f CMakeFiles/stone.dir/build.make CMakeFiles/stone.dir/Service/TcpServer.cpp.s
+.PHONY : Service/TcpServer.cpp.s
+
 Thread/LoopThread.o: Thread/LoopThread.cpp.o
 .PHONY : Thread/LoopThread.o
 
@@ -291,6 +339,9 @@ help:
 	@echo "... Channel/TcpChannel.o"
 	@echo "... Channel/TcpChannel.i"
 	@echo "... Channel/TcpChannel.s"
+	@echo "... Channel/TcpConnection.o"
+	@echo "... Channel/TcpConnection.i"
+	@echo "... Channel/TcpConnection.s"
 	@echo "... Event/EventLoop_LibEvent.o"
 	@echo "... Event/EventLoop_LibEvent.i"
 	@echo "... Event/EventLoop_LibEvent.s"
@@ -303,6 +354,9 @@ help:
 	@echo "... Server.o"
 	@echo "... Server.i"
 	@echo "... Server.s"
+	@echo "... Service/TcpServer.o"
+	@echo "... Service/TcpServer.i"
+	@echo "... Service/TcpServer.s"
 	@echo "... Thread/LoopThread.o"
 	@echo "... Thread/LoopThread.i"
 	@echo "... Thread/LoopThread.s"

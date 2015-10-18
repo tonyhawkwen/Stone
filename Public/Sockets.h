@@ -13,6 +13,7 @@ int Accept(int sockfd, struct sockaddr_in& addr, int& error);
 int Connect(int& sockfd, const std::string& dest, int& error);
 void Close(int& sockfd);
 
+struct sockaddr_in GetLocalAddr(int sockfd);
 }
 
 }

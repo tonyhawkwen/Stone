@@ -32,8 +32,12 @@ int main(int argc, char** argv)
 	google::ParseCommandLineFlags(&argc, &argv, true);
 
 	_PRI("Start tcp server begin...:");
-	TcpServer* server = new TcpServer;
-	server->Start();
+	TcpServer* server = new TcpServer(6329);
+	if(!server->Start())
+	{
+		_ERR("Start fail!");
+		return -1;
+	}
 
 	while(!gExitServer)
 	{

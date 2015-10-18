@@ -1,6 +1,8 @@
 #ifndef _STONE_TCP_SERVER_H_
 #define _STONE_TCP_SERVER_H_
 #include <vector>
+#include <map>
+#include "TcpConnection.h"
 #include "LoopThread.h"
 #include "AsyncQueue.h"
 #include "TcpChannel.h"
@@ -18,9 +20,10 @@ public:
 	void Stop();
 
 private:
-	void newConnection(int sockfd, const InetAddress& addr);
-	void connectionInQueue(void);
-
+	void newConnection(int sockfd, InetAddress& addr);
+	void connectionInQueue(int index);
+	
+	unsigned short Port_;
 	std::unique_ptr<LoopThread> ListenLoop_;
 	std::vector<std::unique_ptr<LoopThread>> ConnectionLoops_;
 	std::vector<std::shared_ptr<IO>> ConnectionIOs_;
@@ -28,6 +31,8 @@ private:
 	std::atomic<bool> Started_;
 	AsyncQueue<std::function<void()>> Queue_;
 	int NoticeFd_;
+	std::map<uint32_t, TcpConnectionPtr> Connections_;
+	uint32_t ConnCount_;
 };
 
 }

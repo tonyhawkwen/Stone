@@ -135,5 +135,18 @@ void Socket::Close(int& sockfd)
 }
 
 
+struct sockaddr_in Socket::GetLocalAddr(int sockfd)
+{
+	struct sockaddr_in localaddr;
+	memset(&localaddr, 0, sizeof(localaddr));
+	socklen_t addrlen = static_cast<socklen_t>(sizeof localaddr);
+	if(getsockname(sockfd, (struct sockaddr *)(&localaddr), &addrlen) < 0)
+	{
+		_ERR("get (%d) local addr fail:%s", sockfd, strerror(errno));
+	}
+
+	return localaddr;
+}
+
 }
 

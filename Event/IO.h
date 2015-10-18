@@ -2,6 +2,7 @@
 #define _STONE_IO_H_
 #include <functional>
 #include <time.h>
+#include <event2/event.h>
 
 namespace Stone{
 

@@ -26,6 +26,7 @@ SET(SRC_LIST Event/EventLoop_LibEvent.cpp
              Public/Times.cpp
              Thread/LoopThread.cpp
 			 Channel/TcpChannel.cpp
+			 Channel/TcpConnection.cpp
              Thread/ThreadPool.cpp
 			 Service/TcpServer.cpp
 			 Server.cpp

@@ -1,27 +1,32 @@
-#include <event2/event.h>
 #include <sys/eventfd.h>
+#include <arpa/inet.h>
 #include "TcpServer.h"
+#include "Sockets.h"
 #include "EventLoop_LibEvent.h"
 
 namespace Stone {
 
 TcpServer::TcpServer():
+	Port_(1080),
 	ListenLoop_(new LoopThread("TcpListenThread")),
 	Channel_(1080),
 	Started_(false),
 	Queue_(1024),
-	NoticeFd_(-1)
+	NoticeFd_(-1),
+	ConnCount_(0)
 {
 	ConnectionLoops_.reserve(std::thread::hardware_concurrency() - 1);
 	ConnectionIOs_.reserve(std::thread::hardware_concurrency() - 1);
 }
 
 TcpServer::TcpServer(unsigned short port):
+	Port_(port),
 	ListenLoop_(new LoopThread("TcpListenThread")),
 	Channel_(port),
 	Started_(false),
 	Queue_(1024),
-	NoticeFd_(-1)
+	NoticeFd_(-1),
+	ConnCount_(0)
 {
 	ConnectionLoops_.reserve(std::thread::hardware_concurrency() - 1);
 	ConnectionIOs_.reserve(std::thread::hardware_concurrency() - 1);
@@ -56,7 +61,7 @@ bool TcpServer::Start()
 	{
 		std::unique_ptr<EventLoop> loop(new EventLoopL());
 		std::shared_ptr<IO> io(new IO(NoticeFd_, EV_READ | EV_PERSIST));
-		io->SetCallback(std::bind(&TcpServer::connectionInQueue, this));
+		io->SetCallback(std::bind(&TcpServer::connectionInQueue, this, i - 1));
 		loop->AddIO(io);
 		ConnectionIOs_.push_back(io);
 	
@@ -74,9 +79,13 @@ bool TcpServer::Start()
 		return false;
 	}
 
-	Channel_.SetReadCallback(std::bind(&TcpServer::newConnection, this, std::placeholders::_1, std::placeholders::_2));
+	Channel_.SetReadCallback(std::move(std::bind(&TcpServer::newConnection,
+					this, std::placeholders::_1, std::placeholders::_2)));
 	loop->AddIO(Channel_.TcpIO());
-	Channel_.Listen();
+	if(!Channel_.Listen())
+	{
+		return false;
+	}
 	ListenLoop_->Create(std::move(loop));
 
 	Started_.store(true, std::memory_order_release);
@@ -93,13 +102,55 @@ void TcpServer::Stop()
 	Started_.store(false, std::memory_order_release);
 }
 
-void TcpServer::newConnection(int sockfd, const InetAddress& addr)
+void TcpServer::newConnection(int sockfd, InetAddress& addr)
 {
+	_DBG("New connection Fd %d From IP:%s, Port:%u", sockfd, addr.saddr.c_str(), addr.port);
+	
+	char buf[32];
+	snprintf(buf, sizeof buf, ":%u_%u", Port_, ++ConnCount_);
+	std::string connName = buf;
+	
+	struct sockaddr_in local = Socket::GetLocalAddr(sockfd);
+	InetAddress localAddr;
+	localAddr.addr = local.sin_addr.s_addr;
+	localAddr.saddr = inet_ntoa(local.sin_addr);
+	localAddr.port = local.sin_port;
 
+	TcpConnectionPtr conn(new TcpConnection(
+				std::move(connName),
+				sockfd,
+				std::move(localAddr),
+				std::move(addr)
+				));
+
+	while(!Queue_.SinglePut(std::bind(
+					&TcpConnection::OnNewConnection, 
+					conn)))
+	{
+		usleep(100);
+	}
+
+	Connections_[ConnCount_] = std::move(conn);
+	eventfd_write(NoticeFd_, 1);
 }
 
-void TcpServer::connectionInQueue(void)
+void TcpServer::connectionInQueue(int index)
 {
-
+	_DBG("receive connection, index : %d", index);
+	auto& thread = ConnectionLoops_[index];
+	eventfd_t num = 0;
+	eventfd_read(NoticeFd_, &num);
+	for(int i = 0; i < num; ++i)
+	{
+		std::function<void()> fn;
+		if(!Queue_.BlockingGet(fn))
+		{
+			break;
+		}
+		
+		_DBG("get one request success!");
+		fn();
+	}
 }
+
 }
