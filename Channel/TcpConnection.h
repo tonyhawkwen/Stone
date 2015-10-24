@@ -12,6 +12,7 @@ class TcpConnection;
 
 typedef std::shared_ptr<TcpConnection> TcpConnectionPtr;
 typedef std::function<void (const TcpConnectionPtr&)> Callback;
+typedef std::function<void (const TcpConnectionPtr&, std::string&)> MessageCallback;
 
 class TcpConnection : Noncopyable, public std::enable_shared_from_this<TcpConnection>
 {
@@ -38,23 +39,27 @@ public:
 		CloseCallback_ = std::move(cb);
 	}
 
-	void SetConnectionCallback(const Callback& cb)
+	void SetReadCallback(Callback&& cb)
 	{
-		ConnectionCallback_ = cb; 
+		ReadCallback_ = std::move(cb); 
 	}
 
-	void SetCloseCallback(const Callback& cb)
+	void SetMsgCallback(MessageCallback&& cb)
 	{
-		CloseCallback_ = cb;
+		MsgCallback_ = std::move(cb);
 	}
 
 private:
+	void handleRead(int cond);
+
 	std::shared_ptr<IO> TcpIO_;
 	std::string Name_;
 	InetAddress LocalAddr_;
 	InetAddress PeerAddr_;
 	Callback ConnectionCallback_;
+	Callback ReadCallback_;
 	Callback CloseCallback_;
+	MessageCallback MsgCallback_;
 };
 
 }

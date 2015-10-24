@@ -6,7 +6,7 @@
 #include "Macro.h"
 using namespace Stone;
 
-DEFINE_int32(port, 0, "What port to listen on");
+DEFINE_int32(port, 1080, "What port to listen on");
 #define MEM_SIZE 1024
 
 bool gExitServer = false;
@@ -32,7 +32,7 @@ int main(int argc, char** argv)
 	google::ParseCommandLineFlags(&argc, &argv, true);
 
 	_PRI("Start tcp server begin...:");
-	TcpServer* server = new TcpServer(6329);
+	std::shared_ptr<TcpServer> server(new TcpServer(FLAGS_port));
 	if(!server->Start())
 	{
 		_ERR("Start fail!");
@@ -45,7 +45,6 @@ int main(int argc, char** argv)
 	}
 
 	server->Stop();
-	delete server;
 	_PRI("End server!");      
     return 0;
 }

@@ -10,7 +10,8 @@
 
 namespace Stone {
 
-class TcpServer : private Noncopyable
+class TcpServer : private Noncopyable,
+	public std::enable_shared_from_this<TcpServer>
 {
 public:
 	TcpServer();
@@ -21,7 +22,7 @@ public:
 
 private:
 	void newConnection(int sockfd, InetAddress& addr);
-	void connectionInQueue(int index);
+	void connectionInQueue(int index, int cond);
 	
 	unsigned short Port_;
 	std::unique_ptr<LoopThread> ListenLoop_;

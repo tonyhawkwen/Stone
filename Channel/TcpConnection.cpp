@@ -1,4 +1,6 @@
+#include <sys/uio.h>
 #include "TcpConnection.h"
+#include "LoopThread.h"
 #include "Macro.h"
 
 namespace Stone {
@@ -32,9 +34,40 @@ TcpConnection::~TcpConnection()
 void TcpConnection::OnNewConnection(void)
 {
 	_DBG("New connection Fd %d From IP:%s, Port:%u", TcpIO_->Fd(), PeerAddr_.saddr.c_str(), PeerAddr_.port);
-
+	if(TcpIO_)
+	{
+		TcpIO_->SetCallback(
+					std::bind(&TcpConnection::handleRead, shared_from_this(), std::placeholders::_1));
+		if(!LoopThread::AddLoopIOLocal(TcpIO_))
+		{
+			_ERR("Add IO to local loopthread fail!");
+			return;
+		}
+	}
 }
 
+void TcpConnection::handleRead(int cond)
+{
+	_ERR("handle read");
+	char buf[1024];
+	struct iovec vec[1];
+	vec[0].iov_base = buf;
+	vec[0].iov_len = sizeof(buf);
+
+	const ssize_t n = readv(TcpIO_->Fd(), vec, 1);
+	if(n < 0)
+	{
+		_ERR("read error!");
+		return;
+	}
+
+	std::string buff(buf, n);
+	_DBG("Get data : %s size: %d", buf, n);
+	if(MsgCallback_)
+	{
+		MsgCallback_(shared_from_this(), buff);
+	}
+}
 
 }
 

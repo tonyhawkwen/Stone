@@ -61,7 +61,7 @@ bool TcpServer::Start()
 	{
 		std::unique_ptr<EventLoop> loop(new EventLoopL());
 		std::shared_ptr<IO> io(new IO(NoticeFd_, EV_READ | EV_PERSIST));
-		io->SetCallback(std::bind(&TcpServer::connectionInQueue, this, i - 1));
+		io->SetCallback(std::bind(&TcpServer::connectionInQueue, shared_from_this(), i - 1, std::placeholders::_1));
 		loop->AddIO(io);
 		ConnectionIOs_.push_back(io);
 	
@@ -79,8 +79,8 @@ bool TcpServer::Start()
 		return false;
 	}
 
-	Channel_.SetReadCallback(std::move(std::bind(&TcpServer::newConnection,
-					this, std::placeholders::_1, std::placeholders::_2)));
+	Channel_.SetReadCallback(std::bind(&TcpServer::newConnection,
+					shared_from_this(), std::placeholders::_1, std::placeholders::_2));
 	loop->AddIO(Channel_.TcpIO());
 	if(!Channel_.Listen())
 	{
@@ -134,9 +134,9 @@ void TcpServer::newConnection(int sockfd, InetAddress& addr)
 	eventfd_write(NoticeFd_, 1);
 }
 
-void TcpServer::connectionInQueue(int index)
+void TcpServer::connectionInQueue(int index, int cond)
 {
-	_DBG("receive connection, index : %d", index);
+	_DBG("receive connection, index : %d cond : %d", index, cond);
 	auto& thread = ConnectionLoops_[index];
 	eventfd_t num = 0;
 	eventfd_read(NoticeFd_, &num);

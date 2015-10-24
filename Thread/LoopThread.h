@@ -36,9 +36,20 @@ public:
 			Loop_->RemoveIO(io);
 		}
 	}
-	static LoopThread* GetLocalLoopThread() 
+	static bool AddLoopIOLocal(std::shared_ptr<IO> &io)
 	{
-		return sLoop_;
+		if(sLoop_ && sLoop_->Loop_)
+		{
+			return sLoop_->Loop_->AddIO(io);
+		}
+		return false;
+	}
+	static void RemoveLoopIOLocal(std::weak_ptr<IO>& io)
+	{
+		if(sLoop_ && sLoop_->Loop_)
+		{
+			sLoop_->Loop_->RemoveIO(io);
+		}
 	}
  
 private:
