@@ -48,16 +48,39 @@ void TcpConnection::OnNewConnection(void)
 
 void TcpConnection::handleRead(int cond)
 {
-	_ERR("handle read");
+	_ERR("handle read %d", cond);
 	char buf[1024];
 	struct iovec vec[1];
 	vec[0].iov_base = buf;
 	vec[0].iov_len = sizeof(buf);
 
 	const ssize_t n = readv(TcpIO_->Fd(), vec, 1);
-	if(n < 0)
+	if(n == 0)
 	{
-		_ERR("read error!");
+		_WRN("Remote side of connection was closed.");
+		if(CloseCallback_)
+		{
+			CloseCallback_(shared_from_this());
+		}
+		std::weak_ptr<IO> io(TcpIO_);
+		LoopThread::RemoveLoopIOLocal(io);
+		close(TcpIO_->Fd());
+		return;
+	}
+	else if(n < 0)
+	{
+		//TODO: if set nonblocking
+		//if (errno == EAGAIN)
+		//{
+		//    continue;
+		//}
+		
+		//TODO: after adding buffer, fix this one
+		//if(errno == EINTR)
+		//{
+		//	continue;
+		//}
+		_ERR("read error %d!", errno);
 		return;
 	}
 
@@ -67,6 +90,9 @@ void TcpConnection::handleRead(int cond)
 	{
 		MsgCallback_(shared_from_this(), buff);
 	}
+
+	//for test
+	//write(TcpIO_->Fd(), "123", 3);
 }
 
 }
