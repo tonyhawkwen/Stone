@@ -4,9 +4,12 @@
 #include <gflags/gflags.h>
 #include "TcpServer.h"
 #include "Macro.h"
+#include "RedisProxy.h"
 using namespace Stone;
 
 DEFINE_int32(port, 1080, "What port to listen on");
+DEFINE_int32(redis_port, 6379, "redis port");
+DEFINE_string(redis_host, "127.0.0.1", "redis host");
 #define MEM_SIZE 1024
 
 bool gExitServer = false;
@@ -30,6 +33,8 @@ int main(int argc, char** argv)
     _PRI("Begin server...");
 	SingalHandle();
 	google::ParseCommandLineFlags(&argc, &argv, true);
+
+	RedisProxy::GetInstance().Init(FLAGS_redis_host, FLAGS_redis_port);
 
 	_PRI("Start tcp server begin...:");
 	std::shared_ptr<TcpServer> server(new TcpServer(FLAGS_port));

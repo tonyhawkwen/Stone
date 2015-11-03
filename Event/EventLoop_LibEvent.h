@@ -22,8 +22,10 @@ public:
 
 	virtual ~EventLoopL();
 	bool Prepare();
-	bool AddIO(std::shared_ptr<IO>& io);
-	void RemoveIO(std::weak_ptr<IO>& io);
+	bool AddIO(std::shared_ptr<IO>& io) override;
+	void RemoveIO(std::shared_ptr<IO>& io) override;
+	void FreezeIO(std::shared_ptr<IO>& io) override;
+	bool RestartIO(std::shared_ptr<IO>& io) override;
 	void SetOwner(std::thread::id owner) {
 		Owner_ = owner;
 	}

@@ -152,8 +152,7 @@ void TcpConnection::closeConnection()
 	{
 		CloseCallback_(shared_from_this());
 	}
-	std::weak_ptr<IO> io(TcpIO_);
-	LoopThread::RemoveLoopIOLocal(io);
+	LoopThread::RemoveLoopIOLocal(TcpIO_);
 	close(TcpIO_->Fd());
 }
 

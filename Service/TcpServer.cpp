@@ -3,12 +3,13 @@
 #include "TcpServer.h"
 #include "Sockets.h"
 #include "EventLoop_LibEvent.h"
+#include "RedisProxy.h"
 
 namespace Stone {
 
 TcpServer::TcpServer():
 	Port_(1080),
-	ListenLoop_(new LoopThread("TcpListenThread")),
+	ListenLoop_(new LoopThread("TcpListenThread", std::bind(&TcpServer::initLoop, this))),
 	Channel_(1080),
 	Started_(false),
 	Queue_(1024),
@@ -21,7 +22,7 @@ TcpServer::TcpServer():
 
 TcpServer::TcpServer(unsigned short port):
 	Port_(port),
-	ListenLoop_(new LoopThread("TcpListenThread")),
+	ListenLoop_(new LoopThread("TcpListenThread", std::bind(&TcpServer::initLoop, this))),
 	Channel_(port),
 	Started_(false),
 	Queue_(1024),
@@ -86,6 +87,7 @@ bool TcpServer::Start()
 	{
 		return false;
 	}
+
 	ListenLoop_->Create(std::move(loop));
 
 	Started_.store(true, std::memory_order_release);
@@ -100,6 +102,16 @@ void TcpServer::Stop()
 	//Queue_.clear();
 	close(NoticeFd_);
 	Started_.store(false, std::memory_order_release);
+}
+
+bool TcpServer::initLoop()
+{
+	_DBG("TcpServer::initLoop.");
+	//test
+	bool ret = RedisProxy::GetInstance().Connect();
+	_DBG("redis connect :%d", ret);  
+
+	return true;
 }
 
 void TcpServer::newConnection(int sockfd, InetAddress& addr)

@@ -85,6 +85,7 @@ void LoopThread::threadProcess()
 
 			Loop_->SetOwner(std::this_thread::get_id());
 			
+			sLoop_ = this;
 			if (Callback_ && (!Callback_()))
 			{
 				break;
@@ -93,9 +94,9 @@ void LoopThread::threadProcess()
 			ret = Loop_->Prepare();
 		}while(0);
 
-		if(ret)
+		if(!ret)
 		{
-			sLoop_ = this;
+			sLoop_ = nullptr;
 		}
 
 		Created_.set_value(ret);

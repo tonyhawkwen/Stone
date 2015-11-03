@@ -161,8 +161,8 @@ bool EventLoopL::AddIO(std::shared_ptr<IO>& io)
 		{
 			return event_add(Datas_[io->Index()]->ev, io->Timeval()) ? false : true;
 		}
-		_ERR("This IO has been added!");
- 		return false;
+		_ERR("This IO(%d %d) has been added!", io->Fd(), io->Condition());
+ 		return true;
 	}
 
 	int idx = -1;
@@ -218,16 +218,14 @@ bool EventLoopL::AddIO(std::shared_ptr<IO>& io)
 	return true;
 }
 
-void EventLoopL::RemoveIO(std::weak_ptr<IO>& wio)
+void EventLoopL::RemoveIO(std::shared_ptr<IO>& io)
 {
-	_ERR("RemoveIO!");
 	if(std::this_thread::get_id() != Owner_)
 	{
 		_ERR("You can only remove IO in the thread that creates this event loop!");
  		return;
 	}
 
-	std::shared_ptr<IO> io(wio.lock());
 	if(!io)
 	{
 		_ERR("This io is not exist!");
@@ -240,11 +238,58 @@ void EventLoopL::RemoveIO(std::weak_ptr<IO>& wio)
 		return;
 	}
 
-	event_del(Datas_[io->Index()]->ev);
-	event_free(Datas_[io->Index()]->ev);
-	Datas_[io->Index()]->ev = NULL;
+	if(Datas_[io->Index()]->ev != NULL)
+	{
+		event_del(Datas_[io->Index()]->ev);
+		event_free(Datas_[io->Index()]->ev);
+		Datas_[io->Index()]->ev = NULL;
+	}
 	IdleIndexs_.push(io->Index());
 	io->SetIndex(-1);
+}
+
+bool EventLoopL::RestartIO(std::shared_ptr<IO>& io)
+{
+	if(std::this_thread::get_id() != Owner_)
+	{
+		_ERR("You can only add IO in the thread that creates this event loop!");
+ 		return false;
+	}
+
+	if(io->Index() >= 0)
+	{
+		return event_add(Datas_[io->Index()]->ev, io->Timeval()) ? false : true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void EventLoopL::FreezeIO(std::shared_ptr<IO>& io)
+{
+	if(std::this_thread::get_id() != Owner_)
+	{
+		_ERR("You can only remove IO in the thread that creates this event loop!");
+ 		return;
+	}
+
+	if(!io)
+	{
+		_ERR("This io is not exist!");
+		return;
+	}
+
+	if(io->Index() < 0)
+	{
+		_ERR("This IO has been removed!");
+		return;
+	}
+
+	if(Datas_[io->Index()]->ev != NULL)
+	{
+		event_del(Datas_[io->Index()]->ev);
+	}
 }
 
 void EventLoopL::Loop()

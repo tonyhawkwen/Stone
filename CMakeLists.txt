@@ -19,6 +19,7 @@ INCLUDE_DIRECTORIES(Data
                     Public
                     Channel
                     Thread
+					Redis
 					Service)
 
 
@@ -30,6 +31,7 @@ SET(SRC_LIST Event/EventLoop_LibEvent.cpp
 			 Channel/TcpConnection.cpp
              Thread/ThreadPool.cpp
 			 Service/TcpServer.cpp
+			 Redis/RedisProxy.cpp
 			 Server.cpp
 	)
 

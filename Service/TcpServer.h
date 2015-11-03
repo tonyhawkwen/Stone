@@ -23,6 +23,7 @@ public:
 private:
 	void newConnection(int sockfd, InetAddress& addr);
 	void connectionInQueue(int index, int cond);
+	bool initLoop();
 	
 	unsigned short Port_;
 	std::unique_ptr<LoopThread> ListenLoop_;

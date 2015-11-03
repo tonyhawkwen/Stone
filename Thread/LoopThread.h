@@ -29,7 +29,7 @@ public:
 		}
 		return false;
 	}
-	void RemoveLoopIO(std::weak_ptr<IO>& io)
+	void RemoveLoopIO(std::shared_ptr<IO>& io)
 	{
 		if(Loop_)
 		{
@@ -44,11 +44,41 @@ public:
 		}
 		return false;
 	}
-	static void RemoveLoopIOLocal(std::weak_ptr<IO>& io)
+	static void RemoveLoopIOLocal(std::shared_ptr<IO>& io)
 	{
 		if(sLoop_ && sLoop_->Loop_)
 		{
 			sLoop_->Loop_->RemoveIO(io);
+		}
+	}
+	bool RestartLoopIO(std::shared_ptr<IO> &io)
+	{
+		if(Loop_)
+		{
+			return Loop_->RestartIO(io);
+		}
+		return false;
+	}
+	void FreezeLoopIO(std::shared_ptr<IO>& io)
+	{
+		if(Loop_)
+		{
+			Loop_->FreezeIO(io);
+		}
+	}
+	static bool RestartLoopIOLocal(std::shared_ptr<IO> &io)
+	{
+		if(sLoop_ && sLoop_->Loop_)
+		{
+			return sLoop_->Loop_->RestartIO(io);
+		}
+		return false;
+	}
+	static void FreezeLoopIOLocal(std::shared_ptr<IO>& io)
+	{
+		if(sLoop_ && sLoop_->Loop_)
+		{
+			sLoop_->Loop_->FreezeIO(io);
 		}
 	}
  
