@@ -7,6 +7,7 @@ INCLUDE(FindPkgConfig)
 PKG_CHECK_MODULES(PKGS REQUIRED
 				  libevent
 				  libgflags
+				  hiredis
 				  )
 
 
@@ -33,7 +34,7 @@ SET(SRC_LIST Event/EventLoop_LibEvent.cpp
 	)
 
 MESSAGE("${CMAKE_CXX_FLAGS}")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -std=c++11")
 MESSAGE("${CMAKE_CXX_FLAGS}")
 
 MESSAGE("${PKGS_LIBRARIES}")

@@ -51,6 +51,7 @@ public:
 
 private:
 	void handleRead(int cond);
+	void closeConnection();
 
 	std::shared_ptr<IO> TcpIO_;
 	std::string Name_;

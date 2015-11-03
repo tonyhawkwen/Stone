@@ -62,12 +62,12 @@ public:
 		return Length_;
 	}
 
-	unsigned int GetData(const char* data) {
+	unsigned int GetData(const char* &data) {
 		data = Data_;
 		return DataSize_;
 	}
 
-	unsigned int GetBuffer(const char* buffer) {
+	unsigned int GetBuffer(const char* &buffer) {
 		buffer = Buffer_;
 		return Length_;
 	}
