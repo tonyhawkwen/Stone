@@ -131,11 +131,12 @@ void TcpConnection::handleRead(int cond)
 		std::string duid(rev, size);
 		_DBG("DUID:%s", duid.c_str());
 
-		unsigned int data[3];
-		data[0] = 0x3;
-		data[1] = 0x0;
-		data[2] = 0x0;
-		Protocal response(0, 0x2, (char*)data, 12);
+		unsigned int data[4];
+		data[0] = 0x0;
+		data[1] = 0x3;
+		data[2] = 0x1;
+		data[3] = 0x1;
+		Protocal response(0, 0x3, (char*)data, 16);
 		length = response.GetBuffer(msg);
 	}
 	_DBG("Response length:%u", length);
