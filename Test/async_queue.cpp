@@ -18,14 +18,14 @@ int main(){
         for(int i = 0; i < total; ++i)                     
         {
             while(!queue.BlockingPut(10))
-			;
+            ;
         }
     });
     std::thread t3([&](){
         for(int i = 0; i < total; ++i)
         {
             while(!queue.BlockingPut(10))
-			;
+            ;
         }
     });
 

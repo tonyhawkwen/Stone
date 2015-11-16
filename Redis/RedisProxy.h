@@ -15,34 +15,34 @@ namespace Stone {
 class RedisProxy
 {
 public:
-	~RedisProxy();
-	
-	static RedisProxy& GetInstance();
-	bool Init(const std::string& ip, int port);
-	bool Connect();
-	bool SendRequest();
-	void Close();
+    ~RedisProxy();
+
+    static RedisProxy& GetInstance();
+    bool Init(const std::string& ip, int port);
+    bool Connect();
+    bool SendRequest();
+    void Close();
 
 private:
-	RedisProxy();
-	static void redisLibeventAddRead(void *privdata);
-	static void redisLibeventDelRead(void *privdata);
-	static void redisLibeventAddWrite(void *privdata);
-	static void redisLibeventDelWrite(void *privdata);
-	static void redisLibeventCleanup(void *privdata);
+    RedisProxy();
+    static void redisLibeventAddRead(void *privdata);
+    static void redisLibeventDelRead(void *privdata);
+    static void redisLibeventAddWrite(void *privdata);
+    static void redisLibeventDelWrite(void *privdata);
+    static void redisLibeventCleanup(void *privdata);
 
-	void handleRead(int cond);
-	void handleWrite(int cond);
-	
-	static void handleConnect(const redisAsyncContext *c, int status);
-	static void handleDisconnect(const redisAsyncContext *c, int status);
+    void handleRead(int cond);
+    void handleWrite(int cond);
 
-	std::string IP_;
-	int Port_;
-	static thread_local redisAsyncContext* RAC_;
-	static thread_local bool Connected_;
-	static thread_local std::shared_ptr<IO> ReadIO_;
-	static thread_local std::shared_ptr<IO> WriteIO_;
+    static void handleConnect(const redisAsyncContext *c, int status);
+    static void handleDisconnect(const redisAsyncContext *c, int status);
+
+    std::string IP_;
+    int Port_;
+    static thread_local redisAsyncContext* RAC_;
+    static thread_local bool Connected_;
+    static thread_local std::shared_ptr<IO> ReadIO_;
+    static thread_local std::shared_ptr<IO> WriteIO_;
 
 };
 

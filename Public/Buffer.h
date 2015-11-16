@@ -69,7 +69,7 @@ public:
         }
 
         ~const_iterator(){
-		}
+        }
 
         const_iterator& operator++()
         {
@@ -268,11 +268,11 @@ public:
     {
         return Mask_;
     }
-	
-	void clear()
-	{
-		ReadIndex_ = WriteIndex_ = 0;
-	}
+
+    void clear()
+    {
+        ReadIndex_ = WriteIndex_ = 0;
+    }
 
     const_iterator begin() const
     {
@@ -353,7 +353,7 @@ public:
         {
             return nw;
         }
-	
+
         if(ReadIndex_ < WriteIndex_)
         {
             /// +-------------------+------------------+------------------+

@@ -27,8 +27,8 @@
 #include <string>
 namespace Stone
 {
-	std::string GetThreadName(void);
-	std::string GetCurrentTime(void);
+    std::string GetThreadName(void);
+    std::string GetCurrentTime(void);
 }
 
 #include <libgen.h>

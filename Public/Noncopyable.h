@@ -7,10 +7,10 @@ namespace Stone{
 class Noncopyable
 {
 protected:
-	Noncopyable() = default;
-	~Noncopyable() = default;
-	Noncopyable(const Noncopyable&) = delete;
-	const Noncopyable& operator=(const Noncopyable&) = delete;
+    Noncopyable() = default;
+    ~Noncopyable() = default;
+    Noncopyable(const Noncopyable&) = delete;
+    const Noncopyable& operator=(const Noncopyable&) = delete;
 };
 
 

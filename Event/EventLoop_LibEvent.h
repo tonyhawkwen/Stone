@@ -18,32 +18,32 @@ struct LoopData;
 class EventLoopL : public EventLoop
 {
 public:
-	EventLoopL();
+    EventLoopL();
 
-	virtual ~EventLoopL();
-	bool Prepare();
-	bool AddIO(std::shared_ptr<IO>& io) override;
-	void RemoveIO(std::shared_ptr<IO>& io) override;
-	void FreezeIO(std::shared_ptr<IO>& io) override;
-	bool RestartIO(std::shared_ptr<IO>& io) override;
-	void SetOwner(std::thread::id owner) {
-		Owner_ = owner;
-	}
-	void Loop();
-	void Quit();
-	void EventLoopCallBack(int index, short cond);
+    virtual ~EventLoopL();
+    bool Prepare();
+    bool AddIO(std::shared_ptr<IO>& io) override;
+    void RemoveIO(std::shared_ptr<IO>& io) override;
+    void FreezeIO(std::shared_ptr<IO>& io) override;
+    bool RestartIO(std::shared_ptr<IO>& io) override;
+    void SetOwner(std::thread::id owner) {
+        Owner_ = owner;
+    }
+    void Loop();
+    void Quit();
+    void EventLoopCallBack(int index, short cond);
 
 private:
-	void quitAsync(int);
-	void removeAllIO();
+    void quitAsync(int);
+    void removeAllIO();
 
-	std::thread::id Owner_;
-	struct event_config* EventConfig_;
-	struct event_base* EventBase_;
-	std::unique_ptr<LoopData> Datas_[MAX_EVENTS_SIZE];
-	int CurIndex_;
-	std::queue<int> IdleIndexs_;
-	std::shared_ptr<IO> Wakeup_;
+    std::thread::id Owner_;
+    struct event_config* EventConfig_;
+    struct event_base* EventBase_;
+    std::unique_ptr<LoopData> Datas_[MAX_EVENTS_SIZE];
+    int CurIndex_;
+    std::queue<int> IdleIndexs_;
+    std::shared_ptr<IO> Wakeup_;
 };
 
 }

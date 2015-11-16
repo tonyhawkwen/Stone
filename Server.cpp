@@ -31,26 +31,26 @@ void SingalHandle()
 int main(int argc, char** argv)
 {
     _PRI("Begin server...");
-	SingalHandle();
-	google::ParseCommandLineFlags(&argc, &argv, true);
+    SingalHandle();
+    google::ParseCommandLineFlags(&argc, &argv, true);
 
-	RedisProxy::GetInstance().Init(FLAGS_redis_host, FLAGS_redis_port);
+    RedisProxy::GetInstance().Init(FLAGS_redis_host, FLAGS_redis_port);
 
-	_PRI("Start tcp server begin...:");
-	std::shared_ptr<TcpServer> server(new TcpServer(FLAGS_port));
-	if(!server->Start())
-	{
-		_ERR("Start fail!");
-		return -1;
-	}
+    _PRI("Start tcp server begin...:");
+    std::shared_ptr<TcpServer> server(new TcpServer(FLAGS_port));
+    if(!server->Start())
+    {
+        _ERR("Start fail!");
+        return -1;
+    }
 
-	while(!gExitServer)
-	{
-		sleep(1);
-	}
+    while(!gExitServer)
+    {
+        sleep(1);
+    }
 
-	server->Stop();
-	_PRI("End server!");      
+    server->Stop();
+    _PRI("End server!");
     return 0;
 }
 
